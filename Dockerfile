@@ -1,4 +1,4 @@
-FROM blacklabelops/alpine:3.8
+FROM darenjacobs/alpine:3.8
 MAINTAINER Daren Jacobs <daren.jacobs@fhlbny.com>
 
 # Note that you also need to update buildscripts/release.sh when the
@@ -29,10 +29,6 @@ COPY bin ${JIRA_SCRIPTS}
 
 RUN apk add --update                                    \
       ca-certificates                                   \
-      gzip                                              \
-      curl                                              \
-      tini                                              \
-      wget                                              \
       xmlstarlet                                    &&  \
     # Install latest glibc
     export GLIBC_VERSION=2.26-r0 && \
