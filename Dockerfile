@@ -1,4 +1,4 @@
-FROM darenjacobs/alpine:3.8
+FROM blacklabelops/alpine:3.8
 MAINTAINER Daren Jacobs <daren.jacobs@fhlbny.com>
 
 # Note that you also need to update buildscripts/release.sh when the
@@ -8,8 +8,6 @@ ARG JIRA_PRODUCT=jira-software
 # Permissions, set the linux user id and group id
 ARG CONTAINER_UID=1000
 ARG CONTAINER_GID=1000
-# Image Build Date By Buildsystem
-ARG BUILD_DATE=undefined
 # Language Settings
 ARG LANG_LANGUAGE=en
 ARG LANG_COUNTRY=US
@@ -31,6 +29,10 @@ COPY bin ${JIRA_SCRIPTS}
 
 RUN apk add --update                                    \
       ca-certificates                                   \
+      gzip                                              \
+      curl                                              \
+      tini                                              \
+      wget                                              \
       xmlstarlet                                    &&  \
     # Install latest glibc
     export GLIBC_VERSION=2.26-r0 && \
@@ -103,6 +105,11 @@ RUN apk add --update                                    \
     rm -rf /var/cache/apk/*                         &&  \
     rm -rf /tmp/*                                   &&  \
     rm -rf /var/log/*
+
+# Image Metadata
+LABEL com.atlassian.application.jira.version=$JIRA_PRODUCT-$JIRA_VERSION \
+      com.atlassian.application.jira.userid=$CONTAINER_UID \
+      com.atlassian.application.jira.groupid=$CONTAINER_GID
 
 USER jira
 WORKDIR ${JIRA_HOME}
